@@ -4,7 +4,7 @@ import time
 import threading
 
 # --- CONFIGURACIÓN NGROK (Tu dirección mundial) ---
-DOMINIO_NGROK = 'https://teenier-jaimie-overfruitfully.ngrok-free.dev' # <--- REVISA QUE ESTÉ BIEN ESTE LINK
+DOMINIO_NGROK = 'https://app-ganar-dinero.onrender.com'
 API_BASE = f'{DOMINIO_NGROK}/api'
 URL_SUBIDA = f'{DOMINIO_NGROK}/subir/' 
 
