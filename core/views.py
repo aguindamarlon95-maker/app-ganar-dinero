@@ -73,15 +73,23 @@ def reclamar_recompensa_automatica(request):
     try:
         usuario = User.objects.get(id=request.data.get('usuario_id'))
         tarea = Tarea.objects.get(id=request.data.get('tarea_id'))
-        if Prueba.objects.filter(trabajador=usuario, tarea=tarea).exists(): return Response({"error": "Ya completada"}, status=400)
-        if tarea.modo != 'TIMER': return Response({"error": "Requiere foto"}, status=400)
         
+        # 1. Verificar si ya la hizo
+        if Prueba.objects.filter(trabajador=usuario, tarea=tarea).exists(): 
+            return Response({"error": "Ya completada"}, status=400)
+        
+        # 2. Verificar modo correcto
+        if tarea.modo != 'TIMER': 
+            return Response({"error": "Requiere foto"}, status=400)
+        
+        # 3. Crear la Prueba Aprobada
+        # OJO: Al crearla, la "Señal" en models.py se activa y PAGA AUTOMÁTICAMENTE.
+        # No hace falta sumar el saldo aquí manualmente.
         Prueba.objects.create(trabajador=usuario, tarea=tarea, aprobada=True, comentario="Auto Timer")
-        perfil = Perfil.objects.get(usuario=usuario)
-        perfil.saldo += tarea.pago_por_accion
-        perfil.save()
+        
         return Response({"mensaje": "OK"}, status=200)
-    except Exception as e: return Response({"error": str(e)}, status=400)
+    except Exception as e: 
+        return Response({"error": str(e)}, status=400)
 
 @api_view(['POST'])
 def solicitar_retiro(request):
